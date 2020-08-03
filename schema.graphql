@@ -1,6 +1,17 @@
-type ExampleEntity @entity {
+type Follow @entity {
   id: ID!
-  count: BigInt!
-  child: Bytes! # address
-  parent: Bytes! # address
+  child: Bytes!
+  parent: Bytes!
+}
+
+type Unfollow @entity {
+  id: ID!
+  child: Bytes!
+  parent: Bytes!
+}
+
+type DeleteFollow @entity {
+  id: ID!
+  child: Bytes!
+  parent: Bytes!
 }
