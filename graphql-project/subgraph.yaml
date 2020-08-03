@@ -1,0 +1,29 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Contract
+    network: mainnet
+    source:
+      address: "0x8A7496955855824FC5DE423e6952227286238a55"
+      abi: Contract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Followed
+        - FollowerDeleted
+        - Unfollowed
+      abis:
+        - name: Contract
+          file: ./abis/Contract.json
+      eventHandlers:
+        - event: Followed(uint256,address,address)
+          handler: handleFollowed
+        - event: FollowerDeleted(uint256,address,address)
+          handler: handleFollowerDeleted
+        - event: Unfollowed(uint256,address,address)
+          handler: handleUnfollowed
+      file: ./src/mapping.ts
