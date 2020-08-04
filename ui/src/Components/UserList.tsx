@@ -45,7 +45,7 @@ class UserList extends Component {
           width="50"
           height="50"
         ></img>
-        <div>User: {this.state.parentId}</div>
+        <div className="Username">User: {this.state.parentId}</div>
         {!this.state.followed ? (
           <button
             className="Follow Follow-white Follow-animated"
@@ -60,10 +60,12 @@ class UserList extends Component {
           >
             Unfollow
           </button>
-        )}
-        {this.state.parentfollowersList.map((follower, index) => (
-          <List key={index} follower={follower} />
-        ))}
+        )}{" "}
+        <div className="Container">
+          {this.state.parentfollowersList.map((follower, index) => (
+            <List key={index} follower={follower} />
+          ))}
+        </div>
       </div>
     );
   }
