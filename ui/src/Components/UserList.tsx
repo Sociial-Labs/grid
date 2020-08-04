@@ -42,8 +42,8 @@ class UserList extends Component {
           className="Profile"
           src="https://media-exp1.licdn.com/dms/image/C5603AQEzeJ-k5MxDOg/profile-displayphoto-shrink_400_400/0?e=1602115200&v=beta&t=Jnot2o04JdtET8XdZ4zjCY4NEb_4L1f0fXKIIotGd5I"
           alt=""
-          width="50"
-          height="50"
+          width="150"
+          height="150"
         ></img>
         <div className="Username">User: {this.state.parentId}</div>
         {!this.state.followed ? (
