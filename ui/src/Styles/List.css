@@ -1,0 +1,10 @@
+.Card {
+  /* position: absolute; */
+  /* left: 20%; */
+  /* max-width: 60vw; */
+  padding: 14px 24px 14px 24px;
+  margin: 20px 0px 20px 0px;
+  width: auto;
+  border-radius: 8px;
+  box-shadow: 3px 3px 3px #d9d9d9, -3px -3px 3px white;
+}
