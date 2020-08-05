@@ -1,7 +1,9 @@
 import React from "react";
 import "./App.css";
 import Web3 from 'web3'
+import Account from "./Components/Account"
 import UserList from "./Components/UserList";
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 class App extends React.Component<{}, {account: string}> {
   state = { account: '' }
@@ -19,7 +21,13 @@ class App extends React.Component<{}, {account: string}> {
   render() {
     return (
       <div className="App">
-        <UserList address={this.state.account} />
+        <Account account={this.state.account} />
+        <Router>
+            <Switch>
+              <Route path={'/user/:address'} component={UserList} />
+              <Route path="*" component={() => (<div>Not Found</div>)} />
+            </Switch>
+        </Router>
       </div>
     );
   }

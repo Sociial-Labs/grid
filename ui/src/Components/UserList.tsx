@@ -1,8 +1,9 @@
 import React from "react";
 import List from "./List";
 import "../Styles/UserList.css";
+import { withRouter } from 'react-router-dom';
 
-class UserList extends React.Component<{address: string}, any> {
+class UserList extends React.Component<any, any> {
   constructor(props: any) {
     super(props)
     this.state = {
@@ -38,14 +39,16 @@ class UserList extends React.Component<{address: string}, any> {
   render() {
     return (
       <div>
+        <br/>
+        <br/>
         <img
           className="Profile"
-          src="https://media-exp1.licdn.com/dms/image/C5603AQEzeJ-k5MxDOg/profile-displayphoto-shrink_400_400/0?e=1602115200&v=beta&t=Jnot2o04JdtET8XdZ4zjCY4NEb_4L1f0fXKIIotGd5I"
+          src="https://lafeber.com/pet-birds/wp-content/uploads/2018/06/Parakeet.jpg"
           alt=""
           width="150"
           height="150"
         ></img>
-        <div className="Username">User: {this.props.address}</div>
+        <div className="Username">{this.props.match.params.address}</div>
         {!this.state.followed ? (
           <button
             className="Follow Follow-white Follow-animated"
@@ -71,4 +74,4 @@ class UserList extends React.Component<{address: string}, any> {
   }
 }
 
-export default UserList;
+export default withRouter(UserList);
