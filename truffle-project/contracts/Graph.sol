@@ -39,4 +39,8 @@ contract Graph {
         idCounter++;
         emit FollowerDeleted(idCounter, msg.sender, child);
     }
+
+    function isFollowedBy(address parent, address child) public view returns (bool) {
+        return followedBy[parent][child];
+    }
 }
