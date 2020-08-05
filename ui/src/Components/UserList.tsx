@@ -1,16 +1,17 @@
-import React, { Component } from "react";
-import shortid from "shortid";
+import React from "react";
 import List from "./List";
 import "../Styles/UserList.css";
+import { withRouter } from 'react-router-dom';
 
-class UserList extends Component {
-  state = {
-    parentId: shortid.generate(),
-    childId: shortid.generate(),
-    parentfollowersList: ["ed", "edd", "eddy"],
-    childfollowsList: [],
-    followed: false,
-  };
+class UserList extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props)
+    this.state = {
+      parentfollowersList: ["ed", "edd", "eddy"],
+      childfollowsList: [],
+      followed: false,
+    };
+  }
 
   handleFollow = () => {
     this.setState({
@@ -27,10 +28,10 @@ class UserList extends Component {
     this.setState({
       followed: false,
       parentfollowersList: this.state.parentfollowersList.filter(
-        (id) => this.state.childId !== id
+        (id: string) => this.state.childId !== id
       ),
       childfollowsList: this.state.childfollowsList.filter(
-        (id) => this.state.parentId !== id
+        (id: string) => this.state.parentId !== id
       ),
     });
   };
@@ -38,14 +39,16 @@ class UserList extends Component {
   render() {
     return (
       <div>
+        <br/>
+        <br/>
         <img
           className="Profile"
-          src="https://media-exp1.licdn.com/dms/image/C5603AQEzeJ-k5MxDOg/profile-displayphoto-shrink_400_400/0?e=1602115200&v=beta&t=Jnot2o04JdtET8XdZ4zjCY4NEb_4L1f0fXKIIotGd5I"
+          src="https://lafeber.com/pet-birds/wp-content/uploads/2018/06/Parakeet.jpg"
           alt=""
-          width="50"
-          height="50"
+          width="150"
+          height="150"
         ></img>
-        <div className="Username">User: {this.state.parentId}</div>
+        <div className="Username">{this.props.match.params.address}</div>
         {!this.state.followed ? (
           <button
             className="Follow Follow-white Follow-animated"
@@ -62,7 +65,7 @@ class UserList extends Component {
           </button>
         )}{" "}
         <div className="Container">
-          {this.state.parentfollowersList.map((follower, index) => (
+          {this.state.parentfollowersList.map((follower: string, index: number) => (
             <List key={index} follower={follower} />
           ))}
         </div>
@@ -71,4 +74,4 @@ class UserList extends Component {
   }
 }
 
-export default UserList;
+export default withRouter(UserList);
