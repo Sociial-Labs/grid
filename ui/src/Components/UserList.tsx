@@ -7,33 +7,41 @@ class UserList extends React.Component<any, any> {
   constructor(props: any) {
     super(props)
     this.state = {
-      parentfollowersList: ["ed", "edd", "eddy"],
-      childfollowsList: [],
+      parentfollowersList: [],
       followed: false,
+      loading: false
     };
   }
 
   handleFollow = () => {
-    this.setState({
-      followed: true,
-      parentfollowersList: [
-        this.state.childId,
-        ...this.state.parentfollowersList,
-      ],
-      childfollowsList: [this.state.parentId, ...this.state.childfollowsList],
-    });
-  };
+    this.setState({ loading: true })
+    this.props.grid.methods.follow(this.props.match.params.address).send({ from: this.props.account, gas: 300000 })
+    .once('receipt', (receipt: any) => {
+      console.log(receipt)
+      this.setState({ 
+        loading: false, 
+        followed: true,
+        parentfollowersList: [
+          this.props.account,
+          ...this.state.parentfollowersList,
+        ]
+      })
+    })
+  }
 
   handleUnfollow = (id: string) => {
-    this.setState({
-      followed: false,
-      parentfollowersList: this.state.parentfollowersList.filter(
-        (id: string) => this.state.childId !== id
-      ),
-      childfollowsList: this.state.childfollowsList.filter(
-        (id: string) => this.state.parentId !== id
-      ),
-    });
+    this.setState({ loading: true })
+    this.props.grid.methods.unfollow(this.props.match.params.address).send({ from: this.props.account, gas: 300000 })
+    .once('receipt', (receipt: any) => {
+      console.log(receipt)
+      this.setState({ 
+        loading: false, 
+        followed: false,
+        parentfollowersList: this.state.parentfollowersList.filter(
+          (id: string) => this.props.match.params.address !== id
+        )
+      })
+    })
   };
 
   render() {
@@ -43,13 +51,14 @@ class UserList extends React.Component<any, any> {
         <br/>
         <img
           className="Profile"
-          src="https://lafeber.com/pet-birds/wp-content/uploads/2018/06/Parakeet.jpg"
-          alt=""
+          src="https://source.unsplash.com/collection/923267/150x150"
+          alt="User profile"
           width="150"
           height="150"
         ></img>
         <div className="Username">{this.props.match.params.address}</div>
-        {!this.state.followed ? (
+        {this.state.loading? <button className="Follow Follow-white Follow-animated" disabled>Loading...</button> :
+        !this.state.followed ? (
           <button
             className="Follow Follow-white Follow-animated"
             onClick={this.handleFollow}

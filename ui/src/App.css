@@ -16,4 +16,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+a:link {
+  color: black;
+  text-decoration: none;
+}
 
+a:visited {
+  color: rgb(108, 108, 108);
+}
