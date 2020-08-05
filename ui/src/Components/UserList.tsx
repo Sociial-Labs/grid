@@ -17,7 +17,6 @@ class UserList extends React.Component<any, any> {
     this.setState({ loading: true })
     this.props.grid.methods.follow(this.props.match.params.address).send({ from: this.props.account, gas: 300000 })
     .once('receipt', (receipt: any) => {
-      console.log(receipt)
       this.setState({ 
         loading: false, 
         followed: true,
@@ -33,12 +32,11 @@ class UserList extends React.Component<any, any> {
     this.setState({ loading: true })
     this.props.grid.methods.unfollow(this.props.match.params.address).send({ from: this.props.account, gas: 300000 })
     .once('receipt', (receipt: any) => {
-      console.log(receipt)
       this.setState({ 
         loading: false, 
         followed: false,
         parentfollowersList: this.state.parentfollowersList.filter(
-          (id: string) => this.props.match.params.address !== id
+          (id: string) => id !== this.props.account
         )
       })
     })
@@ -57,7 +55,8 @@ class UserList extends React.Component<any, any> {
           height="150"
         ></img>
         <div className="Username">{this.props.match.params.address}</div>
-        {this.state.loading? <button className="Follow Follow-white Follow-animated" disabled>Loading...</button> :
+        {this.props.match.params.address === this.props.account? null :
+        this.state.loading? <button className="Follow Follow-white Follow-animated" disabled>Loading...</button> :
         !this.state.followed ? (
           <button
             className="Follow Follow-white Follow-animated"
