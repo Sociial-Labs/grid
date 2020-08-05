@@ -2,6 +2,23 @@ import React from "react";
 import List from "./List";
 import "../Styles/UserList.css";
 import { withRouter } from 'react-router-dom';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { gql } from '@apollo/client';
+
+if (!process.env.REACT_APP_GRAPHQL_ENDPOINT) {
+  throw new Error('REACT_APP_GRAPHQL_ENDPOINT environment variable not defined')
+}
+
+const client = new ApolloClient({
+  uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
+  cache: new InMemoryCache(),
+})
+
+export const FOLLOWERS_QUERY = gql`
+  query follows($where: {parent: $address!}) {
+      child
+  }
+`
 
 class UserList extends React.Component<any, any> {
   constructor(props: any) {
@@ -11,6 +28,11 @@ class UserList extends React.Component<any, any> {
       followed: false,
       loading: false
     };
+  }
+
+  componentWillReceiveProps() {
+    client.query({query: FOLLOWERS_QUERY}).then(result => console.log(result))
+    this.setState({parentfollowersList: [], followed: false})
   }
 
   handleFollow = () => {

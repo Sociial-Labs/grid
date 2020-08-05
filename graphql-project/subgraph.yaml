@@ -6,7 +6,7 @@ dataSources:
     name: Contract
     network: mainnet
     source:
-      address: "0x8A7496955855824FC5DE423e6952227286238a55"
+      address: "0xD5793857bf1eA3a4558f58800B097695e82EF4D8"
       abi: Contract
     mapping:
       kind: ethereum/events
