@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import shortid from "shortid";
+import React from "react";
 import List from "./List";
 import "../Styles/UserList.css";
 
-class UserList extends Component {
-  state = {
-    parentId: shortid.generate(),
-    childId: shortid.generate(),
-    parentfollowersList: ["ed", "edd", "eddy"],
-    childfollowsList: [],
-    followed: false,
-  };
+class UserList extends React.Component<{address: string}, any> {
+  constructor(props: any) {
+    super(props)
+    this.state = {
+      parentfollowersList: ["ed", "edd", "eddy"],
+      childfollowsList: [],
+      followed: false,
+    };
+  }
 
   handleFollow = () => {
     this.setState({
@@ -27,10 +27,10 @@ class UserList extends Component {
     this.setState({
       followed: false,
       parentfollowersList: this.state.parentfollowersList.filter(
-        (id) => this.state.childId !== id
+        (id: string) => this.state.childId !== id
       ),
       childfollowsList: this.state.childfollowsList.filter(
-        (id) => this.state.parentId !== id
+        (id: string) => this.state.parentId !== id
       ),
     });
   };
@@ -45,7 +45,7 @@ class UserList extends Component {
           width="150"
           height="150"
         ></img>
-        <div className="Username">User: {this.state.parentId}</div>
+        <div className="Username">User: {this.props.address}</div>
         {!this.state.followed ? (
           <button
             className="Follow Follow-white Follow-animated"
@@ -62,7 +62,7 @@ class UserList extends Component {
           </button>
         )}{" "}
         <div className="Container">
-          {this.state.parentfollowersList.map((follower, index) => (
+          {this.state.parentfollowersList.map((follower: string, index: number) => (
             <List key={index} follower={follower} />
           ))}
         </div>
