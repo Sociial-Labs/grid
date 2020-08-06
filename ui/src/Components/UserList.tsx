@@ -1,107 +1,82 @@
-import React from "react";
+import React, {useState, useEffect} from 'react';
 import List from "./List";
 import "../Styles/UserList.css";
 import { withRouter } from 'react-router-dom';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { gql } from '@apollo/client';
-
-if (!process.env.REACT_APP_GRAPHQL_ENDPOINT) {
-  throw new Error('REACT_APP_GRAPHQL_ENDPOINT environment variable not defined')
-}
-
-const client = new ApolloClient({
-  uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
-  cache: new InMemoryCache(),
-})
+import { useQuery, gql } from '@apollo/client';
 
 export const FOLLOWERS_QUERY = gql`
-  query follows($where: {parent: $address!}) {
+  query GetFollows($profileAddress: Bytes!) {  
+    follows(where: {parent: $profileAddress}) {
       child
+    }
   }
-`
+`;
 
-class UserList extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      parentfollowersList: [],
-      followed: false,
-      loading: false
-    };
-  }
+const UserList: React.FC<any> = ({account, match, grid}) => {
+  const profileAddress = match.params.address
+  const [followed, setFollowed] = useState(false)
+  const [loadingButton, setLoadingButton] = useState(false) 
+  const { loading, error, data, refetch } = useQuery(FOLLOWERS_QUERY, {variables: { profileAddress }})
 
-  componentWillReceiveProps() {
-    client.query({query: FOLLOWERS_QUERY}).then(result => console.log(result))
-    this.setState({parentfollowersList: [], followed: false})
-  }
+  useEffect(() => {
+    refetch()
+  }, [match, followed])
 
-  handleFollow = () => {
-    this.setState({ loading: true })
-    this.props.grid.methods.follow(this.props.match.params.address).send({ from: this.props.account, gas: 300000 })
+  const handleFollow = () => {
+    setLoadingButton(true)
+    grid.methods.follow(match.params.address).send({ from: account, gas: 300000 })
     .once('receipt', (receipt: any) => {
-      this.setState({ 
-        loading: false, 
-        followed: true,
-        parentfollowersList: [
-          this.props.account,
-          ...this.state.parentfollowersList,
-        ]
-      })
+      setLoadingButton(false)
+      setFollowed(true)
     })
   }
 
-  handleUnfollow = (id: string) => {
-    this.setState({ loading: true })
-    this.props.grid.methods.unfollow(this.props.match.params.address).send({ from: this.props.account, gas: 300000 })
+  const handleUnfollow = () => {
+    setLoadingButton(true)
+    grid.methods.unfollow(match.params.address).send({ from: account, gas: 300000 })
     .once('receipt', (receipt: any) => {
-      this.setState({ 
-        loading: false, 
-        followed: false,
-        parentfollowersList: this.state.parentfollowersList.filter(
-          (id: string) => id !== this.props.account
-        )
-      })
+      setLoadingButton(false)
+      setFollowed(false)
     })
   };
 
-  render() {
-    return (
-      <div>
-        <br/>
-        <br/>
-        <img
-          className="Profile"
-          src="https://source.unsplash.com/collection/923267/150x150"
-          alt="User profile"
-          width="150"
-          height="150"
-        ></img>
-        <div className="Username">{this.props.match.params.address}</div>
-        {this.props.match.params.address === this.props.account? null :
-        this.state.loading? <button className="Follow Follow-white Follow-animated" disabled>Loading...</button> :
-        !this.state.followed ? (
-          <button
-            className="Follow Follow-white Follow-animated"
-            onClick={this.handleFollow}
-          >
-            Follow
-          </button>
-        ) : (
-          <button
-            className="Follow Follow-white Follow-animated"
-            onClick={() => this.handleUnfollow(this.state.childId)}
-          >
-            Unfollow
-          </button>
-        )}{" "}
-        <div className="Container">
-          {this.state.parentfollowersList.map((follower: string, index: number) => (
-            <List key={index} follower={follower} />
-          ))}
-        </div>
+  return (
+    <div>
+      <br/>
+      <br/>
+      <img
+        className="Profile"
+        src="https://source.unsplash.com/collection/923267/150x150"
+        alt="User profile"
+        width="150"
+        height="150"
+      ></img>
+      <div className="Username">{match.params.address}</div>
+      {match.params.address === account? null :
+      loadingButton? <button className="Follow Follow-white Follow-animated" disabled>Loading...</button> :
+      !followed ? (
+        <button
+          className="Follow Follow-white Follow-animated"
+          onClick={handleFollow}
+        >
+          Follow
+        </button>
+      ) : (
+        <button
+          className="Follow Follow-white Follow-animated"
+          onClick={() => handleUnfollow()}
+        >
+          Unfollow
+        </button>
+      )}{" "}
+      <div className="Container">
+        {loading ? null :
+        data.follows.map((follower: {child: string}, index: number) => (
+          <List key={index} follower={follower.child} />
+        ))}
       </div>
-    );
-  }
+    </div>
+  )
 }
 
 export default withRouter(UserList);

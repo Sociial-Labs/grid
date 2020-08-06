@@ -8,6 +8,14 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { GRID_ADDRESS, GRID_ABI } from './config' 
 // may need to adjust types in 'ui/node_modules/web3-utils/types/index.d.ts'
 // specifically allow AbiType and MutabilityType to accept string 
+import { ApolloProvider } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
+  cache: new InMemoryCache()
+});
+
 
 class App extends React.Component<{}, {account: string, accounts: string[], grid: any}> {
   state = { account: '', accounts: [], grid: undefined }
@@ -26,6 +34,7 @@ class App extends React.Component<{}, {account: string, accounts: string[], grid
 
   render() {
     return (
+      <ApolloProvider client={client}>
       <div className="App">
         <Account account={this.state.account} />
         <Router>
@@ -36,6 +45,7 @@ class App extends React.Component<{}, {account: string, accounts: string[], grid
             </Switch>
         </Router>
       </div>
+      </ApolloProvider>
     );
   }
 }
