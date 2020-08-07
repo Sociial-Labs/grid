@@ -36,8 +36,9 @@ class App extends React.Component<{}, {account: string, accounts: string[], grid
     return (
       <ApolloProvider client={client}>
       <div className="App">
-        <Account account={this.state.account} />
         <Router>
+        <Account account={this.state.account} />
+        <br/>
             <Switch>
               <Route exact path='/' render={(props) => <Home {...props} accounts={this.state.accounts} />} />
               <Route path={'/user/:address'} render={(props) => <UserList {...props} account={this.state.account} grid={this.state.grid} />} />
